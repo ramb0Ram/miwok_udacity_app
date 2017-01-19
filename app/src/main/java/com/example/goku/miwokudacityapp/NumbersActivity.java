@@ -31,6 +31,12 @@ public class NumbersActivity extends AppCompatActivity {
 
         LinearLayout rootView = (LinearLayout) findViewById(R.id.rootView);
 
+        for (int i = 0; i < words.size(); i++) {
+            TextView wordView = new TextView(this);
+            wordView.setText(words.get(i));
+            rootView.addView(wordView);
+        }
+        /*
         int i = 0;
         while (i < words.size()) {
             TextView wordView = new TextView(this);
@@ -38,6 +44,8 @@ public class NumbersActivity extends AppCompatActivity {
             rootView.addView(wordView);
             i++;
         }
+        */
+
 
     }
 }
