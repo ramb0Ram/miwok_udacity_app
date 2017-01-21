@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ListView;
@@ -16,7 +17,6 @@ public class NumbersActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_numbers);
-
 
         ArrayList<String> words = new ArrayList<String>();
 
@@ -53,9 +53,9 @@ public class NumbersActivity extends AppCompatActivity {
         words.add("3nine");
         words.add("3lten");
 
-        ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, words);
+        ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, words);
 
-        ListView listView = (ListView) findViewById(R.id.list);
+        GridView listView = (GridView) findViewById(R.id.list);
 
         listView.setAdapter(itemsAdapter);
 
