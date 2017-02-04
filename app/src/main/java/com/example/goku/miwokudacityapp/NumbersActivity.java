@@ -2,13 +2,8 @@ package com.example.goku.miwokudacityapp;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.ListView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class NumbersActivity extends AppCompatActivity {
@@ -19,69 +14,35 @@ public class NumbersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_numbers);
 
 
-        ArrayList<String> words = new ArrayList<String>();
+        ArrayList<Word> words = new ArrayList<>();
 
-        words.add("one");
-        words.add("two");
-        words.add("three");
-        words.add("four");
-        words.add("five");
-        words.add("six");
-        words.add("seven");
-        words.add("eight");
-        words.add("nine");
-        words.add("ten");
+        words.add(new Word("one", "lutti"));
+        words.add(new Word("two", "ottiko"));
+        words.add(new Word("three", "tolookosu"));
+        words.add(new Word("four", "oyyisa"));
+        words.add(new Word("five", "massoka"));
+        words.add(new Word("six", "temmokka"));
+        words.add(new Word("seven", "kenekaku"));
+        words.add(new Word("eight", "kawinta"));
+        words.add(new Word("nine", "woé"));
+        words.add(new Word("ten", "naáacha"));
 
-        words.add("2one");
-        words.add("2two");
-        words.add("2three");
-        words.add("2four");
-        words.add("2five");
-        words.add("2six");
-        words.add("2seven");
-        words.add("2eight");
-        words.add("2nine");
-        words.add("2ten");
+        words.add(new Word("one 2", "lutti"));
+        words.add(new Word("two 2", "ottiko"));
+        words.add(new Word("three 3", "tolookosu"));
+        words.add(new Word("four 4", "oyyisa"));
+        words.add(new Word("five 5", "massoka"));
+        words.add(new Word("six 6", "temmokka"));
+        words.add(new Word("seven 7", "kenekaku"));
+        words.add(new Word("eight 8", "kawinta"));
+        words.add(new Word("nine 9", "woé"));
+        words.add(new Word("ten 10", "naáacha"));
 
-        words.add("3one");
-        words.add("3two");
-        words.add("3three");
-        words.add("3four");
-        words.add("3five");
-        words.add("3six");
-        words.add("3seven");
-        words.add("3eight");
-        words.add("3nine");
-        words.add("3lten");
-
-        //ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, words);
-
-        ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(this, R.layout.list_item, words);
+        WordAdapter itemsAdapter = new WordAdapter(this, words);
 
         ListView listView = (ListView) findViewById(R.id.list);
 
         listView.setAdapter(itemsAdapter);
-
-        //LinearLayout rootView = (LinearLayout) findViewById(R.id.rootView);
-
-
-        /*
-        for (int i = 0; i < words.size(); i++) {
-            TextView wordView = new TextView(this);
-            wordView.setText(words.get(i));
-            rootView.addView(wordView);
-        }
-        */
-        /*
-        int i = 0;
-        while (i < words.size()) {
-            TextView wordView = new TextView(this);
-            wordView.setText(words.get(i));
-            rootView.addView(wordView);
-            i++;
-        }
-        */
-
 
     }
 }
