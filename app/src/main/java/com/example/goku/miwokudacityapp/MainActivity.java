@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         phrases.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, ColorsActivity.class);
+                Intent i = new Intent(MainActivity.this, PhrasesActivity.class);
                 startActivity(i);
             }
         });
