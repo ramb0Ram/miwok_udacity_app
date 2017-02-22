@@ -3,11 +3,13 @@ package com.example.goku.miwokudacityapp;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +51,14 @@ public class WordAdapter extends ArrayAdapter<Word>{
 
         TextView defaultTextView = (TextView) listItemView.findViewById(R.id.default_text_view);
         defaultTextView.setText(currentWord.getDefaultTranslation());
+
+        ImageView image = (ImageView) listItemView.findViewById(R.id.image_of_word);
+        if (currentWord.hasImage()) {
+            image.setImageResource(currentWord.getImageResourceId());
+            image.setVisibility(View.VISIBLE);
+        } else {
+            image.setVisibility(View.GONE);
+        }
 
         return listItemView;
     }

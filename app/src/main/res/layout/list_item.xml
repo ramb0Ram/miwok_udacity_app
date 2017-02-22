@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:paddingRight="16dp"
         android:src="@mipmap/ic_launcher"
-        android:id="@+id/image"/>
+        android:id="@+id/image_of_word"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
