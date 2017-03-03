@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/category_numbers"
+        android:id="@+id/list_item_wrap_text"
         android:paddingLeft="16dp">
 
         <TextView
