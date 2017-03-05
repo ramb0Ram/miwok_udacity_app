@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,9 @@ public class WordAdapter extends ArrayAdapter<Word>{
         // Get the {@link AndroidFlavor} object located at this position in the list
         Word currentWord = getItem(position);
 
+        // Guarda la posición para volver a obtener el objeto dentro del listener
+        listItemView.setTag(position);
+
         /**
          * El siguiente código tambien es correcto, pero no es el que se uso en el tutorial:
          *  LinearLayout listItemWrapText = (LinearLayout) listItemView.findViewById(R.id.list_item_wrap_text);
@@ -81,6 +85,14 @@ public class WordAdapter extends ArrayAdapter<Word>{
             image.setVisibility(View.GONE);
         }
 
+        listItemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = (Integer) v.getTag();
+                Word currentLocalWord = getItem(position);
+                Toast.makeText(getContext(), currentLocalWord.getDefaultTranslation(), Toast.LENGTH_SHORT).show();
+            }
+        });
         return listItemView;
     }
 }
