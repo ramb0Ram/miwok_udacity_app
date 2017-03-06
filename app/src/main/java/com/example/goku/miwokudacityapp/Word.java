@@ -23,21 +23,10 @@ public class Word {
      * @param mDefaultTranslation
      * @param mMiwokTranslation
      */
-    public Word(String mDefaultTranslation, String mMiwokTranslation){
+    public Word(String mDefaultTranslation, String mMiwokTranslation, int mAudioResourceId){
         this.mDefaultTranslation = mDefaultTranslation;
         this.mMiwokTranslation = mMiwokTranslation;
-    }
-
-    /**
-     *
-     * @param mDefaultTranslation is the worlds in the language that the user
-     * @param mMiwokTranslation is the word in the Miwok language
-     * @param mImageResourceId is the drawable resource ID for the image asset
-     */
-    public Word(String mDefaultTranslation, String mMiwokTranslation, int mImageResourceId) {
-        this.mDefaultTranslation = mDefaultTranslation;
-        this.mMiwokTranslation = mMiwokTranslation;
-        this.mImageResourceId = mImageResourceId;
+        this.mAudioResource = mAudioResourceId;
     }
 
     /**
