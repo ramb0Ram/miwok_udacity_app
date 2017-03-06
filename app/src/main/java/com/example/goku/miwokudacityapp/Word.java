@@ -73,4 +73,9 @@ public class Word {
     public boolean hasAudio() {
         return mAudioResource != NO_AUDIO_PROVIDED;
     }
+
+    public int getmAudioResourceId(){
+        return mAudioResource;
+    }
+
 }

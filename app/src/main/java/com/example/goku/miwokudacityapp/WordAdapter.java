@@ -2,6 +2,7 @@ package com.example.goku.miwokudacityapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -85,14 +86,15 @@ public class WordAdapter extends ArrayAdapter<Word>{
             image.setVisibility(View.GONE);
         }
 
-
-
         listItemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = (Integer) v.getTag();
                 Word currentLocalWord = getItem(position);
-                Toast.makeText(getContext(), currentLocalWord.getDefaultTranslation(), Toast.LENGTH_SHORT).show();
+                if (currentLocalWord.hasAudio()) {
+                    MediaPlayer sound = MediaPlayer.create(getContext(), currentLocalWord.getmAudioResourceId());
+                    sound.start();
+                }
             }
         });
         return listItemView;
