@@ -6,7 +6,6 @@
     android:background="@color/tan_background"
     android:minHeight="@dimen/list_item_height"
     android:orientation="horizontal"
-
     android:id="@+id/list_item">
 
     <ImageView
