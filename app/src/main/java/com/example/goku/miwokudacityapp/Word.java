@@ -14,6 +14,10 @@ public class Word {
 
     private static final int NO_IMAGE_PROVIDED = -1;
 
+    private int mAudioResource = NO_AUDIO_PROVIDED;
+
+    private static final int NO_AUDIO_PROVIDED = -1;
+
     /**
      *
      * @param mDefaultTranslation
@@ -36,6 +40,20 @@ public class Word {
         this.mImageResourceId = mImageResourceId;
     }
 
+    /**
+     * Constructor for set audio resource
+     * @param mDefaultTranslation
+     * @param mMiwokTranslation
+     * @param mImageResourceId
+     * @param mAudioResourceId
+     */
+    public Word(String mDefaultTranslation, String mMiwokTranslation, int mImageResourceId, int mAudioResourceId) {
+        this.mDefaultTranslation = mDefaultTranslation;
+        this.mMiwokTranslation = mMiwokTranslation;
+        this.mImageResourceId = mImageResourceId;
+        this.mAudioResource = mAudioResourceId;
+    }
+
     public String getDefaultTranslation() {
         return this.mDefaultTranslation;
     }
@@ -50,5 +68,9 @@ public class Word {
 
     public boolean hasImage() {
         return mImageResourceId != NO_IMAGE_PROVIDED;
+    }
+
+    public boolean hasAudio() {
+        return mAudioResource != NO_AUDIO_PROVIDED;
     }
 }

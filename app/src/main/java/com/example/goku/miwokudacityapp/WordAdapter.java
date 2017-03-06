@@ -85,6 +85,8 @@ public class WordAdapter extends ArrayAdapter<Word>{
             image.setVisibility(View.GONE);
         }
 
+
+
         listItemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
