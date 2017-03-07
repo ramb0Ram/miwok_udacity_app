@@ -52,6 +52,7 @@ public class WordAdapter extends ArrayAdapter<Word>{
         // Get the {@link AndroidFlavor} object located at this position in the list
         Word currentWord = getItem(position);
 
+
         /**
          * El siguiente código tambien es correcto, pero no es el que se uso en el tutorial:
          *  LinearLayout listItemWrapText = (LinearLayout) listItemView.findViewById(R.id.list_item_wrap_text);
