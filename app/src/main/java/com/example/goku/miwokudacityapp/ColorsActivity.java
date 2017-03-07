@@ -13,6 +13,14 @@ import java.util.ArrayList;
 public class ColorsActivity extends AppCompatActivity {
 
     MediaPlayer mediaPlayer;
+
+    private MediaPlayer.OnCompletionListener mCompletionListener = new MediaPlayer.OnCompletionListener(){
+        public void onCompletion (MediaPlayer mediaPlayer) {
+            releaseMediaPlayer();
+        }
+    };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,11 +44,51 @@ public class ColorsActivity extends AppCompatActivity {
         listItem.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Liberar espacio
+                releaseMediaPlayer();
                 Word word = words.get(position);
-                Log.v("ColorsActivity", "Current word: " + word);
+                //Log.v("ColorsActivity", "Current word: " + word);
                 mediaPlayer = MediaPlayer.create(ColorsActivity.this, word.getAudioResourceId());
                 mediaPlayer.start();
+
+                /**
+                Se debe de tener cuidado en no ocupar mucha memoria, por ello se debe liberar la memoria
+                ocupada por el objeto MediaPlayer en el callback onCompletion.
+
+                Para no crear una clase anonima cada vez que se libere el objeto MediaPlayer, la creamos una
+                 solo vez y la guardamos en el campo mCompletionListener
+
+                Código a re emlpezar:
+
+                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        releaseMediaPlayer();
+                    }
+                });
+
+                 Por el código:
+                */
+                mediaPlayer.setOnCompletionListener(mCompletionListener);
             }
         });
     }
+
+    /**
+     * Clean up the media player by releasing its resources.
+     */
+    private void releaseMediaPlayer() {
+        // If the media player is not null, then it may be currently playing a sound.
+        if (mediaPlayer != null) {
+            // Regardless of the current state of the media player, release its resources
+            // because we no longer need it.
+            mediaPlayer.release();
+
+            // Set the media player back to null. For our code, we've decided that
+            // setting the media player to null is an easy way to tell that the media player
+            // is not configured to play an audio file at the moment.
+            mediaPlayer = null;
+        }
+    }
+
 }
