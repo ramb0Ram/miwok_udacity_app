@@ -139,8 +139,8 @@ public class ColorsActivity extends AppCompatActivity {
      */
     @Override
     protected void onStop() {
-        super.onStop();
         releaseMediaPlayer();
+        super.onStop();
         //Log.v("ColorsActivity", "onStop callback");
     }
 
