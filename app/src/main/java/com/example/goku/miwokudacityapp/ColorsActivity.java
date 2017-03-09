@@ -28,6 +28,7 @@ public class ColorsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.word_list);
+        //Log.v("ColorsActivity", "onCreate callback");
 
         final ArrayList<Word> words = new ArrayList<>();
 
@@ -102,4 +103,50 @@ public class ColorsActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //Log.v("ColorsActivity", "onStart callback");
+    }
+
+    /**
+     * Dispatch onResume() to fragments.  Note that for better inter-operation
+     * with older versions of the platform, at the point of this call the
+     * fragments attached to the activity are <em>not</em> resumed.  This means
+     * that in some cases the previous state may still be saved, not allowing
+     * fragment transactions that modify the state.  To correctly interact
+     * with fragments in their proper state, you should instead override
+     * {@link #onResumeFragments()}.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //Log.v("ColorsActivity", "onResume callback");
+    }
+
+    /**
+     * Dispatch onPause() to fragments.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //Log.v("ColorsActivity", "onPause callback");
+    }
+
+
+    /**
+     * Liberar espacio en memoria al eliminar objetos.
+     */
+    @Override
+    protected void onStop() {
+        super.onStop();
+        releaseMediaPlayer();
+        //Log.v("ColorsActivity", "onStop callback");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //Log.v("ColorsActivity", "onDestroy callback");
+    }
 }
