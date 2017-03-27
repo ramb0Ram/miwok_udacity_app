@@ -1,9 +1,11 @@
 package com.example.goku.miwokudacityapp;
 
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -14,10 +16,40 @@ public class NumbersActivity extends AppCompatActivity {
 
     private MediaPlayer mMediaPlayer;
 
-    private MediaPlayer.OnCompletionListener completionListener = new MediaPlayer.OnCompletionListener(){
+    /**
+     * Listener para dar seguimiento al termino de reproducción de un audio
+     */
+    private MediaPlayer.OnCompletionListener mediaOncompletionListener = new MediaPlayer.OnCompletionListener(){
         @Override
         public void onCompletion(MediaPlayer mediaPlayer){
             releaseMediaPlayer();
+        }
+    };
+
+    /**
+     * Objeto AudioManager
+     */
+    private AudioManager audioManager;
+
+    /**
+     * Listener para realizar acciones cuando se actualice al AudioFocus
+     */
+    private AudioManager.OnAudioFocusChangeListener audioManagerOnAudioChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+        @Override
+        public void onAudioFocusChange(int focusChange) {
+            if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+                mMediaPlayer.start();
+                Log.v("NumbersActivity", "-->>AUDIOFOCUS_GAIN");
+            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                releaseMediaPlayer();
+                Log.v("NumbersActivity", "-->>AUDIOFOCUS_LOSS");
+            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
+                mMediaPlayer.pause();
+                Log.v("NumbersActivity", "-->AUDIOFOCUS_LOSS_TRANSIENT");
+            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
+                mMediaPlayer.pause();
+                Log.v("NumbersActivity", "-->>AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
+            }
         }
     };
 
@@ -25,7 +57,6 @@ public class NumbersActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.word_list);
-
 
         final ArrayList<Word> words = new ArrayList<>();
 
@@ -46,15 +77,28 @@ public class NumbersActivity extends AppCompatActivity {
 
         listView.setAdapter(itemsAdapter);
 
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                releaseMediaPlayer();
-                Word word = words.get(position);
 
-                mMediaPlayer = MediaPlayer.create(NumbersActivity.this, word.getAudioResourceId());
-                mMediaPlayer.start();
-                mMediaPlayer.setOnCompletionListener(completionListener);
+                int resultRequestAudioFocus= audioManager.requestAudioFocus(
+                    audioManagerOnAudioChangeListener,
+                    AudioManager.STREAM_MUSIC,
+                    AudioManager.AUDIOFOCUS_GAIN_TRANSIENT
+                );
+                if (resultRequestAudioFocus == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                    Log.v("NumbersActivity", "-->> AUDIOFOCUS_REQUEST_GRANTED");
+                    releaseMediaPlayer();
+                    Word word = words.get(position);
+
+                    mMediaPlayer = MediaPlayer.create(NumbersActivity.this, word.getAudioResourceId());
+                    mMediaPlayer.start();
+                    mMediaPlayer.setOnCompletionListener(mediaOncompletionListener);
+                } else if (resultRequestAudioFocus == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
+                    Log.v("NumbersActivity", "-->>AUDIOFOCUS REQUEST FAILED");
+                }
             }
         });
 
@@ -74,6 +118,9 @@ public class NumbersActivity extends AppCompatActivity {
             // setting the media player to null is an easy way to tell that the media player
             // is not configured to play an audio file at the moment.
             mMediaPlayer = null;
+
+            //Liberar memoria del AudioFocus
+            audioManager.abandonAudioFocus(audioManagerOnAudioChangeListener);
         }
     }
 
