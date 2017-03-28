@@ -1,5 +1,6 @@
 package com.example.goku.miwokudacityapp;
 
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,8 +12,10 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 public class ColorsActivity extends AppCompatActivity {
-
-    MediaPlayer mediaPlayer;
+    /**
+     * Objeto MediaPlayer
+     */
+    private MediaPlayer mediaPlayer;
 
     /**
      * Clase anonima que libera el objeto MediaPlayer, se guarda en una variable para que solo
@@ -24,11 +27,31 @@ public class ColorsActivity extends AppCompatActivity {
         }
     };
 
+    private AudioManager audioManager;
+
+    private AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+        @Override
+        public void onAudioFocusChange(int focusChange) {
+            if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+
+            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+
+            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
+
+            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
+
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.word_list);
         //Log.v("ColorsActivity", "onCreate callback");
+
+        //Obtener el servicio AUDIO_SERVICE
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 
         final ArrayList<Word> words = new ArrayList<>();
 
@@ -55,33 +78,51 @@ public class ColorsActivity extends AppCompatActivity {
                  */
                 releaseMediaPlayer();
 
-                Word word = words.get(position);
-                //Log.v("ColorsActivity", "Current word: " + word);
-                mediaPlayer = MediaPlayer.create(ColorsActivity.this, word.getAudioResourceId());
-                mediaPlayer.start();
-
                 /**
-                 * Listener que libera la memoria una vez que el audio a finalizado, se debe crear
-                 * despues del método start()
-                 *
-                 * Se debe de tener cuidado en no ocupar mucha memoria, por ello se debe liberar la memoria
-                 * ocupada por el objeto MediaPlayer en el callback onCompletion.
-                 *
-                 * Para no crear una clase anonima cada vez que se libere el objeto MediaPlayer, la creamos una
-                 * solo vez y la guardamos en el campo mCompletionListener
-                 *
-                 * Código a re emlpezar:
-                 *
-                 * mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                 *
-                 * @Override
-                 * public void onCompletion(MediaPlayer mp) {
-                 *  releaseMediaPlayer();
-                 * }
-                 *
-                 * Por el código:
-                */
-                mediaPlayer.setOnCompletionListener(mCompletionListener);
+                 * Solicitud para pedir el foco del audio
+                 */
+                int resultAudioManager = audioManager.requestAudioFocus(
+                        onAudioFocusChangeListener,//Listener para ser avisador cuando se actualize el foco del audio
+                        AudioManager.STREAM_MUSIC,//Afectamos el stream music
+                        AudioManager.AUDIOFOCUS_GAIN_TRANSIENT//El audio a reproducir es corto
+                );
+                /**
+                 * Si la solicitud de audio es exitosa
+                 */
+                if (resultAudioManager == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                    Word word = words.get(position);
+                    //Log.v("ColorsActivity", "Current word: " + word);
+                    mediaPlayer = MediaPlayer.create(ColorsActivity.this, word.getAudioResourceId());
+                    mediaPlayer.start();
+
+                    /**
+                     * Listener que libera la memoria una vez que el audio a finalizado, se debe crear
+                     * despues del método start()
+                     *
+                     * Se debe de tener cuidado en no ocupar mucha memoria, por ello se debe liberar la memoria
+                     * ocupada por el objeto MediaPlayer en el callback onCompletion.
+                     *
+                     * Para no crear una clase anonima cada vez que se libere el objeto MediaPlayer, la creamos una
+                     * solo vez y la guardamos en el campo mCompletionListener
+                     *
+                     * Código a re emlpezar:
+                     *
+                     * mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                     *
+                     * @Override
+                     * public void onCompletion(MediaPlayer mp) {
+                     *  releaseMediaPlayer();
+                     * }
+                     *
+                     * Por el código:
+                     */
+                    mediaPlayer.setOnCompletionListener(mCompletionListener);
+                } else if (resultAudioManager == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
+                    Log.v("ColorsActivity", "-->>AUDIOFOCUS_REQUEST_FAILED");
+                }
+
+
+
             }
         });
     }
@@ -100,6 +141,9 @@ public class ColorsActivity extends AppCompatActivity {
             // setting the media player to null is an easy way to tell that the media player
             // is not configured to play an audio file at the moment.
             mediaPlayer = null;
+
+            //Liberar espacio de solicitud de audio
+            audioManager.abandonAudioFocus(onAudioFocusChangeListener);
         }
     }
 

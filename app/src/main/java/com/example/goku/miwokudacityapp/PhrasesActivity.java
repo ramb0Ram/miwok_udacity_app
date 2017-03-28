@@ -1,9 +1,12 @@
 package com.example.goku.miwokudacityapp;
 
+import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.sax.RootElement;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -18,6 +21,34 @@ public class PhrasesActivity extends AppCompatActivity {
         @Override
         public void onCompletion(MediaPlayer mediaPlayer){
             releaseMediaPlayer();
+        }
+    };
+
+    private AudioManager audioManager;
+
+    private AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+        @Override
+        public void onAudioFocusChange(int focusChange) {
+            Log.v("PhrasesActivity", "-->>ENTRANDO A onAudioFocusChange");
+            if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+                //Recobramos el foco
+                Log.v("PhrasesActivity", "-->>AUDIOFOCUS_GAIN");
+                mediaPlayer.start();
+            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
+                //Perdimos el foco temporalmente
+                Log.v("PhrasesActivity", "-->>AUDIOFOCUS_LOSS_TRANSIENT");
+                mediaPlayer.pause();
+            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                //Perdimos el foco totalmente
+                Log.v("PhrasesActivity", "-->>AUDIOFOCUS_LOSS");
+                releaseMediaPlayer();
+            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
+                //Perdimos foco pero podemos seguir reproduciendo audio y opcionalmentye bajar el volumen
+                Log.v("PhrasesActivity", "-->>AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
+                mediaPlayer.pause();
+            } else {
+                Log.v("PhrasesActivity", "-->>NINGUN CALLBACK");
+            }
         }
     };
 
@@ -43,14 +74,26 @@ public class PhrasesActivity extends AppCompatActivity {
         ListView list = (ListView) findViewById(R.id.list);
         list.setAdapter(adapterPhrases);
 
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                releaseMediaPlayer();
-                Word word = words.get(position);
-                mediaPlayer = MediaPlayer.create(PhrasesActivity.this, word.getAudioResourceId());
-                mediaPlayer.start();
-                mediaPlayer.setOnCompletionListener(completionListener);
+                int resultRequestAudioFocus = audioManager.requestAudioFocus(
+                        onAudioFocusChangeListener,
+                        AudioManager.STREAM_MUSIC,//Afactamos el stream music
+                        AudioManager.AUDIOFOCUS_GAIN_TRANSIENT//Reproducimos el audio en un tiempo corto
+                );
+                if (resultRequestAudioFocus == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                    releaseMediaPlayer();
+                    Word word = words.get(position);
+                    mediaPlayer = MediaPlayer.create(PhrasesActivity.this, word.getAudioResourceId());
+                    mediaPlayer.start();
+                    mediaPlayer.setOnCompletionListener(completionListener);
+                    Log.v("PhrasesActivity", "-->>AUDIOFOCUS_REQUEST_GRANTED");
+                } else if (resultRequestAudioFocus == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
+                    Log.v("PhrasesActivity", "-->>AUDIOFOCUS_REQUEST_FAILED");
+                }
             }
         });
     }
@@ -70,6 +113,8 @@ public class PhrasesActivity extends AppCompatActivity {
             // setting the media player to null is an easy way to tell that the media player
             // is not configured to play an audio file at the moment.
             mediaPlayer = null;
+
+            audioManager.abandonAudioFocus(onAudioFocusChangeListener);
         }
     }
 
