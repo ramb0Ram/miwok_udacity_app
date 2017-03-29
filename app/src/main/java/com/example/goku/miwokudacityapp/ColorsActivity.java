@@ -33,13 +33,13 @@ public class ColorsActivity extends AppCompatActivity {
         @Override
         public void onAudioFocusChange(int focusChange) {
             if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-
+                mediaPlayer.start();
             } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-
+                releaseMediaPlayer();
             } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
-
+                mediaPlayer.pause();
             } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
-
+                mediaPlayer.pause();
             }
         }
     };
@@ -63,6 +63,7 @@ public class ColorsActivity extends AppCompatActivity {
         words.add(new Word("white", "kelelli", R.drawable.color_white, R.raw.color_white));
         words.add(new Word("dusty yellow", "ṭopiisә", R.drawable.color_dusty_yellow, R.raw.color_dusty_yellow));
         words.add(new Word("mustard yellow", "chiwiiṭә", R.drawable.color_mustard_yellow, R.raw.color_mustard_yellow));
+        words.add(new Word("sam sam", "serafin", R.drawable.color_black, R.raw.silvia));
 
         WordAdapter listAdapter = new WordAdapter(this, words, R.color.category_colors);
         ListView listItem = (ListView)findViewById(R.id.list);
