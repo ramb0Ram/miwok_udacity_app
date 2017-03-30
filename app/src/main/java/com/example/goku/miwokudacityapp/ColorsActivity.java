@@ -12,14 +12,15 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 public class ColorsActivity extends AppCompatActivity {
+
     /**
-     * Objeto MediaPlayer
+     * Objeto MediaPlayer para reproducir audio
      */
     private MediaPlayer mediaPlayer;
 
     /**
      * Clase anonima que libera el objeto MediaPlayer, se guarda en una variable para que solo
-     * se cree una solo vez y despues de re utilize
+     * se cree una solo vez y después de reutilize
      */
     private MediaPlayer.OnCompletionListener mCompletionListener = new MediaPlayer.OnCompletionListener(){
         public void onCompletion (MediaPlayer mediaPlayer) {
@@ -27,18 +28,31 @@ public class ColorsActivity extends AppCompatActivity {
         }
     };
 
+    /**
+     * Objeto AudioManager para acceder al foco del audio
+     */
     private AudioManager audioManager;
 
+    /**
+     * Listener que es llamado cada vez que se actualiza el foco del audio
+     */
     private AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
         @Override
         public void onAudioFocusChange(int focusChange) {
             if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+                //Recobramos el foco
                 mediaPlayer.start();
             } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                //Perdimos el foco.
+                //El usuario cambio a otra app
                 releaseMediaPlayer();
             } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
+                //Perdimos el foco temporalmente.
+                //Posiblemnete entro una llamada pero el foco regresara
                 mediaPlayer.pause();
             } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
+                //Otra app esta reproducioendo audio sobre nosotros, pero podemos seguir reproduciendo audio.
+                //Entro una notificación, podemos bajar el volumen,
                 mediaPlayer.pause();
             }
         }
