@@ -62,6 +62,10 @@ public class ColorsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.word_list);
+
+
+
+
         //Log.v("ColorsActivity", "onCreate callback");
 
         //Obtener el servicio AUDIO_SERVICE
@@ -140,6 +144,8 @@ public class ColorsActivity extends AppCompatActivity {
 
             }
         });
+
+        //getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**
